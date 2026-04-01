@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lilly Kinsale — Product Knowledge Quiz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #D52B1E;
+    --dark-red: #A8221A;
+    --grey: #6D6E71;
+    --light-grey: #F4F4F4;
+    --mid-grey: #E0E0E0;
+    --white: #FFFFFF;
+    --dark: #1A1A1A;
+    --correct: #2E7D32;
+    --wrong: #C62828;
+  }
+
+  body {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    background: var(--light-grey);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    background: var(--white);
+    border-bottom: 4px solid var(--red);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+
+  .logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 0.5px;
+  }
+
+  main {
+    width: 100%;
+    max-width: 720px;
+    padding: 32px 16px 48px;
+    flex: 1;
+  }
+
+  .welcome-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .welcome-hero {
+    background: linear-gradient(135deg, var(--red) 0%, var(--dark-red) 100%);
+    padding: 40px 36px;
+    color: white;
+  }
+
+  .welcome-hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .welcome-hero p {
+    font-size: 15px;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+
+  .welcome-body {
+    padding: 32px 36px;
+  }
+
+  .welcome-body h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 16px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .info-item {
+    background: var(--light-grey);
+    border-radius: 8px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--red);
+  }
+
+  .info-item .label {
+    font-size: 11px;
+    color: var(--grey);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+
+  .info-item .value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .start-btn {
+    width: 100%;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+
+  .start-btn:hover { background: var(--dark-red); }
+
+  .quiz-header { margin-bottom: 20px; }
+
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-label { font-size: 13px; color: var(--grey); font-weight: 600; }
+  .score-label { font-size: 13px; color: var(--grey); }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: var(--mid-grey);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .question-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .question-type-badge {
+    display: inline-block;
+    background: var(--light-grey);
+    color: var(--grey);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  .question-body { padding: 28px 32px 24px; }
+
+  .question-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.45;
+    margin-bottom: 24px;
+  }
+
+  .options-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .option-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--light-grey);
+    border: 2px solid var(--mid-grey);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--dark);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover:not(:disabled) { border-color: var(--red); background: #FFF5F5; }
+  .option-btn.correct { background: #E8F5E9; border-color: var(--correct); color: var(--correct); font-weight: 600; }
+  .option-btn.wrong { background: #FFEBEE; border-color: var(--wrong); color: var(--wrong); font-weight: 600; }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    margin: 16px 32px 0;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .feedback-box.correct { background: #E8F5E9; color: var(--correct); border-left: 4px solid var(--correct); display: block; }
+  .feedback-box.wrong { background: #FFEBEE; color: var(--wrong); border-left: 4px solid var(--wrong); display: block; }
+
+  .feedback-explanation { font-weight: 400; margin-top: 4px; font-size: 13px; color: var(--grey); }
+
+  .question-footer { padding: 20px 32px 28px; display: flex; justify-content: flex-end; }
+
+  .next-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    display: none;
+  }
+
+  .next-btn:hover { background: var(--dark-red); }
+
+  .results-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .results-hero { padding: 36px; text-align: center; color: white; }
+  .results-hero.pass { background: linear-gradient(135deg, #2E7D32, #1B5E20); }
+  .results-hero.fail { background: linear-gradient(135deg, var(--red), var(--dark-red)); }
+
+  .results-hero .big-score { font-size: 72px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .results-hero .result-label { font-size: 20px; font-weight: 300; opacity: 0.9; margin-bottom: 8px; }
+  .results-hero .result-verdict { font-size: 22px; font-weight: 700; letter-spacing: 1px; }
+
+  .results-body { padding: 32px 36px; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+
+  .stat-item { background: var(--light-grey); border-radius: 8px; padding: 16px; text-align: center; }
+  .stat-item .stat-val { font-size: 26px; font-weight: 700; color: var(--dark); }
+  .stat-item .stat-lbl { font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.6px; }
+
+  .review-title { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 14px; }
+
+  .review-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; max-height: 300px; overflow-y: auto; }
+
+  .review-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 8px; font-size: 13px; }
+  .review-item.correct { background: #E8F5E9; }
+  .review-item.wrong { background: #FFEBEE; }
+  .review-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .review-item .q-text { font-weight: 600; color: var(--dark); margin-bottom: 2px; }
+  .review-item .a-text { color: var(--grey); }
+
+  .retry-btn {
+    width: 100%;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .retry-btn:hover { background: var(--dark-red); }
+
+  footer { text-align: center; padding: 20px; font-size: 12px; color: var(--grey); }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo-text">Lilly — Kinsale Quality Culture</span>
+</header>
+
+<main>
+  <div id="welcome-screen">
+    <div class="welcome-card">
+      <div class="welcome-hero">
+        <h1>Quality Culture Product Quiz</h1>
+        <p>Test your knowledge of the medicines manufactured and handled across our Kinsale sites.</p>
+      </div>
+      <div class="welcome-body">
+        <h2>About this quiz</h2>
+        <div class="info-grid">
+          <div class="info-item"><div class="label">Questions</div><div class="value">20 Questions</div></div>
+          <div class="info-item"><div class="label">Format</div><div class="value">Multiple Choice &amp; True/False</div></div>
+          <div class="info-item"><div class="label">Topics</div><div class="value">Products, MOA, Sites, Formats</div></div>
+          <div class="info-item"><div class="label">Pass Mark</div><div class="value">80% (16/20)</div></div>
+        </div>
+        <button class="start-btn" onclick="startQuiz()">Begin Quiz →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="quiz-screen" class="hidden">
+    <div class="quiz-header">
+      <div class="progress-row">
+        <span class="progress-label" id="q-counter">Question 1 of 20</span>
+        <span class="score-label" id="score-display">Score: 0</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:5%"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-body">
+        <span class="question-type-badge" id="q-type-badge">Multiple Choice</span>
+        <div class="question-text" id="q-text"></div>
+        <div class="options-list" id="options-list"></div>
+      </div>
+      <div class="feedback-box" id="feedback-box">
+        <div id="feedback-title"></div>
+        <div class="feedback-explanation" id="feedback-explanation"></div>
+      </div>
+      <div class="question-footer">
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="results-screen" class="hidden">
+    <div class="results-card">
+      <div class="results-hero" id="results-hero">
+        <div class="big-score" id="big-score"></div>
+        <div class="result-label" id="result-label"></div>
+        <div class="result-verdict" id="result-verdict"></div>
+      </div>
+      <div class="results-body">
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-val" id="stat-correct"></div><div class="stat-lbl">Correct</div></div>
+          <div class="stat-item"><div class="stat-val" id="stat-wrong"></div><div class="stat-lbl">Incorrect</div></div>
+          <div class="stat-item"><div class="stat-val" id="stat-pct"></div><div class="stat-lbl">Score</div></div>
+        </div>
+        <div class="review-title">Question Review</div>
+        <div class="review-list" id="review-list"></div>
+        <button class="retry-btn" onclick="resetQuiz()">Retake Quiz</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>© Eli Lilly and Company — For internal training use only — Kinsale Site</footer>
+
+<script>
+const ALL_QUESTIONS = [
+  { type:"mc", q:"What is the brand name for Selpercatinib?", options:["Verzenio","Retevmo","Omvoh","Jaypirca"], answer:1, explanation:"Selpercatinib is marketed as Retevmo." },
+  { type:"mc", q:"What is the brand name for Abemaciclib?", options:["Trulicity","Retevmo","Verzenio","Kisunla"], answer:2, explanation:"Abemaciclib is marketed as Verzenio." },
+  { type:"mc", q:"Which brand name belongs to Mirikizumab?", options:["Omvoh","Olumiant","Jaypirca","Mounjaro"], answer:0, explanation:"Mirikizumab is marketed as Omvoh." },
+  { type:"mc", q:"What is the brand name for Dulaglutide?", options:["Kisunla","Mounjaro","Trulicity","Retevmo"], answer:2, explanation:"Dulaglutide is marketed as Trulicity." },
+  { type:"mc", q:"Which drug is marketed as Kisunla?", options:["Donanemab","Tirzepatide","Baricitinib","Lasmiditan"], answer:0, explanation:"Donanemab is marketed as Kisunla, used in Alzheimer's Disease." },
+  { type:"mc", q:"What is the brand name for Baricitinib?", options:["Verzenio","Omvoh","Jaypirca","Olumiant"], answer:3, explanation:"Baricitinib is marketed as Olumiant." },
+  { type:"mc", q:"Which product is known by the brand name Jaypirca?", options:["Pirtobrutinib","Mirikizumab","Lasmiditan","Imlunestrant"], answer:0, explanation:"Pirtobrutinib is marketed as Jaypirca." },
+  { type:"mc", q:"Tirzepatide is marketed under which brand name?", options:["Trulicity","Retevmo","Mounjaro","Omvoh"], answer:2, explanation:"Tirzepatide is marketed as Mounjaro." },
+  { type:"mc", q:"At which Kinsale site is Tirzepatide (Mounjaro) manufactured?", options:["IE8","IE16","IE2b","IE43"], answer:2, explanation:"Tirzepatide is located at site IE2b." },
+  { type:"mc", q:"Selpercatinib (Retevmo) and Abemaciclib (Verzenio) are both located at which site?", options:["IE2","IE8","IE16","IE43"], answer:1, explanation:"Both Selpercatinib and Abemaciclib are at IE8." },
+  { type:"mc", q:"Which site handles Pirtobrutinib, Imlunestrant, and Lasmiditan?", options:["IE2","IE8","IE42","IE16"], answer:3, explanation:"Pirtobrutinib, Imlunestrant, and Lasmiditan are all located at IE16." },
+  { type:"mc", q:"Dulaglutide (Trulicity) is handled at which Kinsale site?", options:["IE2","IE8","IE42","IE43"], answer:2, explanation:"Dulaglutide is located at IE42." },
+  { type:"mc", q:"Donanemab (Kisunla) and Mirikizumab (Omvoh) are both located at which site?", options:["IE2b","IE8","IE16","IE43"], answer:3, explanation:"Both Donanemab and Mirikizumab are located at IE43." },
+  { type:"tf", q:"True or False: Selpercatinib (Retevmo) is an injectable product.", options:["True","False"], answer:1, explanation:"Selpercatinib is a tablet, not an injection." },
+  { type:"tf", q:"True or False: Tirzepatide (Mounjaro) is administered as an injection.", options:["True","False"], answer:0, explanation:"Tirzepatide is an injection." },
+  { type:"tf", q:"True or False: Orforglipron is notable because, unlike many GLP-1 treatments, it is taken orally.", options:["True","False"], answer:0, explanation:"Orforglipron is an oral GLP-1 medication, which differentiates it from injectable GLP-1 treatments." },
+  { type:"tf", q:"True or False: Dulaglutide (Trulicity) is available as a tablet.", options:["True","False"], answer:1, explanation:"Dulaglutide is an injection, not a tablet." },
+  { type:"mc", q:"Which of the following is NOT an injectable product in the Kinsale portfolio?", options:["Mirikizumab","Donanemab","Baricitinib","Dulaglutide"], answer:2, explanation:"Baricitinib (Olumiant) is a tablet. The others are injections." },
+  { type:"mc", q:"Which Kinsale product targets amyloid beta plaques in the brain?", options:["Dulaglutide","Baricitinib","Donanemab","Mirikizumab"], answer:2, explanation:"Donanemab (Kisunla) targets amyloid beta plaques to slow Alzheimer's progression." },
+  { type:"mc", q:"Which product inhibits JAK enzymes and is used for Rheumatoid Arthritis?", options:["Pirtobrutinib","Baricitinib","Selpercatinib","Lasmiditan"], answer:1, explanation:"Baricitinib (Olumiant) inhibits JAK enzymes and treats Rheumatoid Arthritis and Alopecia Areata." },
+  { type:"mc", q:"Mirikizumab (Omvoh) treats which condition?", options:["Migraine","Type 2 Diabetes","Moderate to Severe Ulcerative Colitis","Breast Cancer"], answer:2, explanation:"Mirikizumab treats moderate to severe Ulcerative Colitis and Crohn's Disease." },
+  { type:"mc", q:"Which product targets the 5-HT1F receptor to treat migraine?", options:["Lasmiditan","Imlunestrant","Baricitinib","Mirikizumab"], answer:0, explanation:"Lasmiditan targets the 5-HT1F receptor to block pain signals associated with migraine." },
+  { type:"mc", q:"Pirtobrutinib (Jaypirca) is used to treat which category of disease?", options:["Autoimmune Conditions","Type 2 Diabetes","Blood Cancers","Neurological Disorders"], answer:2, explanation:"Pirtobrutinib treats blood cancers including MCL, CLL and SLL by blocking BTK enzymes." },
+  { type:"tf", q:"True or False: Imlunestrant can be used in combination with Abemaciclib (Verzenio) for certain cancers.", options:["True","False"], answer:0, explanation:"Imlunestrant targets the SERD pathway and can be used in combination with Verzenio for breast cancer." },
+  { type:"mc", q:"Dulaglutide (Trulicity) provides which additional benefit beyond Type 2 Diabetes management?", options:["Targets amyloid plaques","Reduces cardiovascular risk","Blocks BTK enzymes","Inhibits IL-23"], answer:1, explanation:"Dulaglutide is approved for Type 2 Diabetes Management and Cardiovascular Risk Reduction." },
+];
+
+let questions = [], current = 0, score = 0, answered = false, results = [];
+
+function shuffle(arr) {
+  for (let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function startQuiz() {
+  questions = shuffle([...ALL_QUESTIONS]).slice(0,20);
+  current = 0; score = 0; results = [];
+  document.getElementById('welcome-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[current], total = questions.length;
+  document.getElementById('q-counter').textContent = `Question ${current+1} of ${total}`;
+  document.getElementById('score-display').textContent = `Score: ${score}`;
+  document.getElementById('progress-fill').style.width = `${(current/total)*100}%`;
+  document.getElementById('q-type-badge').textContent = q.type==='tf' ? 'True / False' : 'Multiple Choice';
+  document.getElementById('q-text').textContent = q.q;
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  document.getElementById('next-btn').style.display = 'none';
+  const ol = document.getElementById('options-list');
+  ol.innerHTML = '';
+  q.options.forEach((opt,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i);
+    ol.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.option-btn');
+  const correct = idx === q.answer;
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i===q.answer) b.classList.add('correct');
+    else if (i===idx && !correct) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('feedback-box');
+  document.getElementById('feedback-title').textContent = correct ? '✓ Correct!' : '✗ Incorrect';
+  document.getElementById('feedback-explanation').textContent = q.explanation;
+  fb.className = 'feedback-box ' + (correct ? 'correct' : 'wrong');
+  if (correct) score++;
+  results.push({ q:q.q, correct, userAns:q.options[idx], correctAns:q.options[q.answer] });
+  document.getElementById('next-btn').style.display = 'block';
+  document.getElementById('next-btn').textContent = current+1 < questions.length ? 'Next Question →' : 'See Results →';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) renderQuestion();
+  else showResults();
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('results-screen').classList.remove('hidden');
+  const total = questions.length, pct = Math.round((score/total)*100), pass = pct >= 80;
+  document.getElementById('big-score').textContent = pct + '%';
+  document.getElementById('result-label').textContent = `${score} out of ${total} correct`;
+  document.getElementById('result-verdict').textContent = pass ? '✓ PASS' : '✗ NEEDS REVIEW';
+  document.getElementById('results-hero').className = 'results-hero ' + (pass ? 'pass' : 'fail');
+  document.getElementById('stat-correct').textContent = score;
+  document.getElementById('stat-wrong').textContent = total - score;
+  document.getElementById('stat-pct').textContent = pct + '%';
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '';
+  results.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (r.correct ? 'correct' : 'wrong');
+    div.innerHTML = `<span class="review-icon">${r.correct ? '✓' : '✗'}</span>
+      <div><div class="q-text">${r.q}</div>
+      <div class="a-text">${r.correct ? 'Correct' : `Your answer: ${r.userAns} — Correct: ${r.correctAns}`}</div></div>`;
+    rl.appendChild(div);
+  });
+}
+
+function resetQuiz() {
+  document.getElementById('results-screen').classList.add('hidden');
+  document.getElementById('welcome-screen').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
